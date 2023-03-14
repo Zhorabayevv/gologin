@@ -1,139 +1,111 @@
-<div>
-  <div>
-    <main style="padding: 0px">
-      <div>
-        <div style="background: rgb(255, 255, 255)">
-          <div class="container nav">
-            <header>
-              <img src="./../assets/gologinlogo.svg" />
-              <div>
+<div class="container nav">
+  <header>
+    <img src="./../assets/gologinlogo.svg" />
+    <div>
+      <button
+        *ngIf="parser"
+        class="white-btn btn-back"
+        type="button"
+        (click)="cancel()"
+      >
+        <span> Назад </span>
+      </button>
+      <button
+        class="my-btn"
+        type="button"
+        [disabled]="!disabledPar"
+        (click)="!disabledPar ? '' : parse()"
+        [ngClass]="{
+          'btn-parser': !disabledPar,
+          'btn-parser-dis': disabledPar
+        }"
+      >
+        <span> {{ !parser ? "ПАРСИТЬ" : "Импортировать" }} </span>
+      </button>
+    </div>
+  </header>
+</div>
+<div class="container key-div">
+  <div style="flex: 1 0 auto">
+    <div style="margin-top: 16px" *ngIf="!parser; else tableParse">
+      <div *ngIf="!fullTextArea" class="drop-zone">
+        <div class="main-container">
+          <img
+            [src]="
+              disabledPar
+                ? './../assets/file-active.png'
+                : './../assets/file.png'
+            "
+          />
+          <h2 style="font-size: 24px">
+            {{ !disabledPar ? "Перетащите файл с профилями" : file?.name }}
+          </h2>
+          <div style="text-align: center">
+            <p style="margin-bottom: 16px" *ngIf="!disabledPar">
+              Или нажмите "Выбрать файл"
+            </p>
+            <div style="margin-top: 20px">
+              <button
+                *ngIf="!disabledPar; else otherBtn"
+                class="my-btn"
+                type="button"
+                (click)="inputFiles.click()"
+              >
+                <span> Выбрать файл </span>
+              </button>
+              <ng-template #otherBtn>
                 <button
-                  *ngIf="parser"
-                  class="white-btn btn-back"
+                  class="white-btn"
+                  style="margin-right: 16px"
                   type="button"
-                  (click)="cancel()"
+                  (click)="inputFiles.click()"
                 >
-                  <span> Назад </span>
+                  <span> Выбрать другой файл </span>
                 </button>
-                <button
-                  class="my-btn"
-                  type="button"
-                  [disabled]="!disabledPar"
-                  (click)="!disabledPar ? '' : parse()"
-                  [ngClass]="{
-                    'btn-parser': !disabledPar,
-                    'btn-parser-dis': disabledPar
-                  }"
-                >
-                  <span> {{ !parser ? "ПАРСИТЬ" : "Импортировать" }} </span>
-                </button>
-              </div>
-            </header>
+              </ng-template>
+              <button
+                class="white-btn"
+                type="button"
+                (click)="disabledPar ? cancel() : ''"
+              >
+                <span>
+                  {{ !disabledPar ? "Вставить из Буфера" : "Отменить" }}
+                </span>
+              </button>
+              <input
+                #inputFiles
+                type="file"
+                style="display: none"
+                (input)="uploadFiles($event)"
+              />
+              <input type="file" style="display: none" />
+            </div>
           </div>
         </div>
-        <div
-          class="container key-div"
-        >
-          <div style="flex: 1 0 auto">
-            <div style="margin-top: 16px" *ngIf="!parser; else tableParse">
-              <div
-                *ngIf="!fullTextArea"
-                class="drop-zone"
-              >
-                <div class="h100">
-                  <div class="h100">
-                    <div class="h100" style="width: 100%; position: relative">
-                      <div
-                      class="main-container"
-                      >
-                        <img
-                          [src]="
-                            disabledPar
-                              ? './../assets/file-active.png'
-                              : './../assets/file.png'
-                          "
-                        />
-                        <h2 style="font-size: 24px">
-                          {{
-                            !disabledPar
-                              ? "Перетащите файл с профилями"
-                              : file?.name
-                          }}
-                        </h2>
-                        <div style="text-align: center">
-                          <p style="margin-bottom: 16px" *ngIf="!disabledPar">
-                            Или нажмите "Выбрать файл"
-                          </p>
-                          <div style="margin-top: 20px">
-                            <button
-                              *ngIf="!disabledPar; else otherBtn"
-                              class="my-btn"
-                              type="button"
-                              (click)="inputFiles.click()"
-                            >
-                              <span> Выбрать файл </span>
-                            </button>
-                            <ng-template #otherBtn>
-                              <button
-                                class="white-btn"
-                                style="margin-right: 16px"
-                                type="button"
-                                (click)="inputFiles.click()"
-                              >
-                                <span> Выбрать другой файл </span>
-                              </button>
-                            </ng-template>
+        <div style="display: none">
+          <div>Перетащите файл с профилями сюда</div>
+        </div>
+      </div>
+      <div style="margin-top: 20px" *ngIf="!file">
+        <textarea
+          [(ngModel)]="textValue"
+          (ngModelChange)="onTextChange()"
+          placeholder="Введите или вставьте данные из шопов"
+        ></textarea>
+      </div>
+    </div>
 
-                            <button
-                              class="white-btn"
-                              type="button"
-                              (click)="disabledPar ? cancel() : ''"
-                            >
-                              <span>
-                                {{
-                                  !disabledPar
-                                    ? "Вставить из Буфера"
-                                    : "Отменить"
-                                }}
-                              </span>
-                            </button>
-                            <input
-                              #inputFiles
-                              type="file"
-                              style="display: none"
-                              (input)="uploadFiles($event)"
-                            />
-                            <input type="file" style="display: none" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="display: none">
-                    <div>Перетащите файл с профилями сюда</div>
-                  </div>
-                </div>
-              </div>
-              <div style="margin-top: 20px" *ngIf="!file">
-                <textarea
-                  [(ngModel)]="textValue"
-                  (ngModelChange)="onTextChange()"
-                  placeholder="Введите или вставьте данные из шопов"
-                ></textarea>
-              </div>
-            </div>
-
-            <!-- Table -->
-            <ng-template #tableParse>
-              <!-- тут я решил просто вывести значение файла -->
-              <div style="margin-top: 20px;">
-                {{ textValue ? textValue : testValue }}
-              </div>
-              <button class="my-btn" type="button" (click)="downloadFile()">
-                <span> Скачать файл </span>
-              </button>
-              <!-- тут я честно говоря не понял что там делает но если надо будет вывести то что приходить из бэка думаю тут проблем вообще не будет просто надо будет еще ngfor tr сделать и внутри него еще ngfor th и все значение которые приходят -->
-              <!-- <table>
+    <!-- Table -->
+    <ng-template #tableParse>
+      <!-- тут я решил просто вывести значение файла -->
+      <div style="margin-top: 20px">
+        {{ textValue ? textValue : testValue }}
+      </div>
+      <button class="my-btn" type="button" (click)="downloadFile()">
+        <span> Скачать файл </span>
+      </button>
+      <!-- тут я честно говоря не понял что там делает но если надо будет вывести то что приходить из бэка думаю тут проблем вообще не будет просто надо будет еще ngfor tr сделать и внутри него еще ngfor th и все значение которые приходят -->
+      <!-- <table>
                 <thead>
                   <tr>
                     <th *ngFor="let item of tableTh" class="th-table">{{item.title}}
@@ -143,15 +115,11 @@
                 </thead>
                 <tbody></tbody>
               </table> -->
-            </ng-template>
-          </div>
-          <footer>
-            <div style="margin-top: 50px">
-              <p style="font-size: 14px">© 2022 dolphin. Все права защищены.</p>
-            </div>
-          </footer>
-        </div>
-      </div>
-    </main>
+    </ng-template>
   </div>
+  <footer>
+    <div style="margin-top: 50px">
+      <p style="font-size: 14px">© 2022 dolphin. Все права защищены.</p>
+    </div>
+  </footer>
 </div>

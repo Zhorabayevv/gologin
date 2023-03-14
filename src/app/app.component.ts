@@ -61,8 +61,6 @@ export class AppComponent implements OnInit {
 
   uploadFiles(e: any): void {
     let files = [...Array.from(e.target.files)];
-    console.log(files);
-
     files.forEach((file: any) => {
       this.file = file;
       this.disabledPar = true;
@@ -71,7 +69,6 @@ export class AppComponent implements OnInit {
       reader.readAsText(file);
       reader.onload = () => {
         this.testValue = reader.result as string;
-        console.log(this.testValue);
       };
       // если надо отправить файл на бэк
       // const formData = new FormData();
